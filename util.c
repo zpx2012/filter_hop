@@ -561,17 +561,17 @@ void locate_gfw(char *remote_ip)
         }
     }
 
-    if (aflag) {
-        clock_gettime(CLOCK_REALTIME, &end);
-        int sec = diff(end, start).tv_sec;
-        if (sec < 90) {
-            log_info("Wait %d seconds for unblocking from GFW blacklist.", 90 - sec);
-        }
-        while (diff(end,start).tv_sec < 90) {
-            usleep(100000);
-            clock_gettime(CLOCK_REALTIME, &end);
-        }
-    }
+    // if (aflag) {
+    //     clock_gettime(CLOCK_REALTIME, &end);
+    //     int sec = diff(end, start).tv_sec;
+    //     if (sec < 90) {
+    //         log_info("Wait %d seconds for unblocking from GFW blacklist.", 90 - sec);
+    //     }
+    //     while (diff(end,start).tv_sec < 90) {
+    //         usleep(100000);
+    //         clock_gettime(CLOCK_REALTIME, &end);
+    //     }
+    // }
 }
 
 
