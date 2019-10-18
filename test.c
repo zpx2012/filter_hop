@@ -172,7 +172,7 @@ void add_iptables_rules()
     char cmd[1000];
     sprintf(cmd, "iptables -A OUTPUT -t raw -p tcp -d %s --dport %u --tcp-flags RST,ACK RST -j DROP", remote_ip, remote_port);
     system(cmd);
-    sprintf(cmd, "iptables -A INPUT -p tcp -s %s --sport %d --tcp-flags RST RST -j NFQUEUE --queue-num %d", remote_ip, remote_port, NF_QUEUE_NUM);
+    sprintf(cmd, "iptables -A INPUT -p tcp -s %s --sport %d -j NFQUEUE --queue-num %d", remote_ip, remote_port, NF_QUEUE_NUM);
     system(cmd);
     sprintf(cmd, "iptables -A OUTPUT -t raw -p tcp -d %s --dport %d -j NFQUEUE --queue-num %d", remote_ip, remote_port, NF_QUEUE_NUM);
     system(cmd);
@@ -184,7 +184,7 @@ void remove_iptables_rules()
     char cmd[1000];
     sprintf(cmd, "iptables -D OUTPUT -t raw -p tcp -d %s --dport %u --tcp-flags RST,ACK RST -j DROP", remote_ip, remote_port);
     system(cmd);
-    sprintf(cmd, "iptables -D INPUT -p tcp -s %s --sport %d --tcp-flags RST RST -j NFQUEUE --queue-num %d", remote_ip, remote_port, NF_QUEUE_NUM);
+    sprintf(cmd, "iptables -D INPUT -p tcp -s %s --sport %d -j NFQUEUE --queue-num %d", remote_ip, remote_port, NF_QUEUE_NUM);
     system(cmd);
     sprintf(cmd, "iptables -D OUTPUT -t raw -p tcp -d %s --dport %d -j NFQUEUE --queue-num %d", remote_ip, remote_port, NF_QUEUE_NUM);
     system(cmd);
@@ -432,14 +432,14 @@ int main(int argc, char *argv[])
     remote_port = atoi(argv[2]);
     local_port = atoi(argv[3]);
 
-    remote_host_name = strncpy(argv[4]);
-    local_host_name = strncpy(argv[5]);
+    strncpy(remote_host_name, argv[4], 63);
+    strncpy(local_host_name, argv[5], 63);
 
     /* records are saved in folder results */
     /* create the directory if not exist */
     mkdir("results", 0755);
 
-    char hostname_pair_path[64], hresult_path[64];
+    char hostname_pair_path[64], result_path[64];
 
     time_t rawtime;
     struct tm * timeinfo;
@@ -509,7 +509,7 @@ int main(int argc, char *argv[])
 
     char ttl_file_path[64];
     sprintf(ttl_file_path, "%s/filter_hop_%s_%s.csv", hostname_pair_path, local_host_name, remote_host_name);
-    FILE *f_output = fopen(ttl_file_path, 'a');
+    FILE *f_output = fopen(ttl_file_path, "a");
     int type1ttl = -1, type2ttl = -1;
     for (int i = 0; i < 30; i++) {
         if (type1ttl == -1 && type1gfw[i] == 1) {
