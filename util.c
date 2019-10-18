@@ -558,11 +558,11 @@ void locate_gfw(char *remote_ip)
         log_exp("Trying TTL %d...", ttl);
         type1rst = type2rst = succrst = 0;
         send_request(payload_sk, ack, seq, ttl);
-        usleep(100);
+        usleep(200000);
         send_request(payload_sk, ack, seq, ttl);
-        usleep(100);
+        usleep(200000);
         send_request(payload_sk, ack, seq, ttl);
-        usleep(100);
+        usleep(200000);
         nfq_process(2);
         if (type1rst) {
             type1gfw[ttl] = 1;
