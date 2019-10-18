@@ -170,7 +170,7 @@ void add_iptables_rules()
     char cmd[1000];
     sprintf(cmd, "iptables -A OUTPUT -t raw -p tcp -d %s --dport %u --tcp-flags RST,ACK RST -j DROP", remote_ip, remote_port);
     system(cmd);
-    sprintf(cmd, "iptables -A INPUT -p tcp -s %s --sport %d -j NFQUEUE --queue-num %d", remote_ip, remote_port, NF_QUEUE_NUM);
+    sprintf(cmd, "iptables -A INPUT -p tcp -s %s --sport %d --tcp-flags RST RST -j NFQUEUE --queue-num %d", remote_ip, remote_port, NF_QUEUE_NUM);
     system(cmd);
     sprintf(cmd, "iptables -A OUTPUT -t raw -p tcp -d %s --dport %d -j NFQUEUE --queue-num %d", remote_ip, remote_port, NF_QUEUE_NUM);
     system(cmd);
@@ -182,7 +182,7 @@ void remove_iptables_rules()
     char cmd[1000];
     sprintf(cmd, "iptables -D OUTPUT -t raw -p tcp -d %s --dport %u --tcp-flags RST,ACK RST -j DROP", remote_ip, remote_port);
     system(cmd);
-    sprintf(cmd, "iptables -D INPUT -p tcp -s %s --sport %d -j NFQUEUE --queue-num %d", remote_ip, remote_port, NF_QUEUE_NUM);
+    sprintf(cmd, "iptables -D INPUT -p tcp -s %s --sport %d --tcp-flags RST RST -j NFQUEUE --queue-num %d", remote_ip, remote_port, NF_QUEUE_NUM);
     system(cmd);
     sprintf(cmd, "iptables -D OUTPUT -t raw -p tcp -d %s --dport %d -j NFQUEUE --queue-num %d", remote_ip, remote_port, NF_QUEUE_NUM);
     system(cmd);
