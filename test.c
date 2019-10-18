@@ -62,6 +62,8 @@ unsigned short local_port = 38324;
 char remote_ip[16];
 unsigned short remote_port = 80;
 
+char local_host_name[64];
+char remote_host_name[64];
 
 char payload_sk[1000] = "GET /?keyword=ultrasurf HTTP/1.1\r\nHOST: whatever.com\r\nUser-Agent: test agent\r\n\r\n";
 
@@ -412,8 +414,8 @@ int main(int argc, char *argv[])
 {
     int opt;
 
-    if (argc != 4) {
-        printf("Usage: %s <remote_ip> <remote_port> <local_port>\n", argv[0]);
+    if (argc != 6) {
+        printf("Usage: %s <remote_ip> <remote_port> <local_port> <local_host_name> <remote_host_name>\n", argv[0]);
         exit(-1);
     }
 
@@ -430,19 +432,27 @@ int main(int argc, char *argv[])
     remote_port = atoi(argv[2]);
     local_port = atoi(argv[3]);
 
+    strncpy(remote_host_name, argv[4], 63);
+    strncpy(local_host_name, argv[5], 63);
+
     /* records are saved in folder results */
     /* create the directory if not exist */
     mkdir("results", 0755);
 
+    char hostname_pair_path[64], result_path[64];
+
     time_t rawtime;
     struct tm * timeinfo;
     char time_str[20];
-    char result_path[64];
     char tmp[64];
+
+    sprintf(hostname_pair_path, "results/%s-%s", local_host_name, remote_host_name);
+    mkdir(hostname_pair_path, 0755);
+
     time(&rawtime);
     timeinfo = localtime(&rawtime);
-    strftime(time_str, 20, "%Y%m%d%H%M%S", timeinfo);
-    sprintf(result_path, "results/%s", time_str);
+    strftime(time_str, 20, "%Y%m%d_%H%M%S", timeinfo);
+    sprintf(result_path, "%s/%s", hostname_pair_path, time_str);
     mkdir(result_path, 0755);
 
     pid_t pid;
@@ -496,6 +506,22 @@ int main(int argc, char *argv[])
 
     log_exp("Locating GFW devices...");
     locate_gfw(remote_ip);
+
+    char ttl_file_path[64];
+    sprintf(ttl_file_path, "%s/filter_hop_%s_%s.csv", hostname_pair_path, local_host_name, remote_host_name);
+    FILE *f_output = fopen(ttl_file_path, "a");
+    int type1ttl = -1, type2ttl = -1;
+    for (int i = 0; i < 30; i++) {
+        if (type1ttl == -1 && type1gfw[i] == 1) {
+            type1ttl = i;
+        }
+        if (type2ttl == -1 && type2gfw[i] == 1) {
+            type2ttl = i;
+        }
+    }
+    strftime(time_str, 20, "%Y-%m-%d %H:%M:%S", timeinfo);
+    fprintf(f_output, "%s,%d,%d", time_str, type1ttl, type2ttl);
+    fclose(f_output);
 
     nfq_stop = 1;
 

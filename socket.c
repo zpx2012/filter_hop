@@ -3,9 +3,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #include "hping2.h"
 #include "globals.h"
+#include "util.h"
 
 
 void regular_tcp_fastopen_send(char* payload, int len)
@@ -284,15 +286,22 @@ unsigned int wait_SYN()
     return recv_seq;
 }
 
-unsigned int wait_SYN_ACK(unsigned int ack = 0)
+unsigned int wait_SYN_ACK(unsigned int ack = 0, int timeout = 1)
 {
     unsigned int recv_seq = 0, recv_ack = 0;
     unsigned char tcp_flags = TH_SYN|TH_ACK;
     int succ = -1;
+    timespec _start, _end;
+    clock_gettime(CLOCK_REALTIME, &_start);
     do{
         succ = wait_packet(local_ip, local_port, remote_ip, remote_port, tcp_flags, pkt_data, &pkt_len, &recv_seq, &recv_ack);
         if(ack != 0 && recv_ack != ack) succ = -1;
         //if(succ != 0) printf("failed to get seq\n");
+        clock_gettime(CLOCK_REALTIME, &_end);
+        int sec = diff(_end, _start).tv_sec;
+        if (sec >= timeout) {
+            break;
+        }
     }
     while(succ != 0);
 

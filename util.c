@@ -531,9 +531,18 @@ void locate_gfw(char *remote_ip)
 
     seq = rand();
 
-    send_SYN("", 0, seq);
-    seq++;
-    ack = wait_SYN_ACK(seq);
+    int retry = 4;
+    while (retry) {
+        send_SYN("", 0, seq);
+        seq++;
+        ack = wait_SYN_ACK(seq, 1);
+        if (ack != 0) break;
+        retry--;
+    }
+    if (retry == 0) {
+        log_exp("Give up.");
+        return;
+    }
     legal_ttl = last_ttl;
     log_exp("Server packet TTL = %d", legal_ttl);
     ack++;
@@ -549,6 +558,11 @@ void locate_gfw(char *remote_ip)
         log_exp("Trying TTL %d...", ttl);
         type1rst = type2rst = succrst = 0;
         send_request(payload_sk, ack, seq, ttl);
+        usleep(200000);
+        send_request(payload_sk, ack, seq, ttl);
+        usleep(200000);
+        send_request(payload_sk, ack, seq, ttl);
+        usleep(200000);
         nfq_process(2);
         if (type1rst) {
             type1gfw[ttl] = 1;
@@ -561,17 +575,19 @@ void locate_gfw(char *remote_ip)
         }
     }
 
-    // if (aflag) {
-    //     clock_gettime(CLOCK_REALTIME, &end);
-    //     int sec = diff(end, start).tv_sec;
-    //     if (sec < 90) {
-    //         log_info("Wait %d seconds for unblocking from GFW blacklist.", 90 - sec);
-    //     }
-    //     while (diff(end,start).tv_sec < 90) {
-    //         usleep(100000);
-    //         clock_gettime(CLOCK_REALTIME, &end);
-    //     }
-    // }
+    /*
+    if (aflag) {
+        clock_gettime(CLOCK_REALTIME, &end);
+        int sec = diff(end, start).tv_sec;
+        if (sec < 90) {
+            log_info("Wait %d seconds for unblocking from GFW blacklist.", 90 - sec);
+        }
+        while (diff(end,start).tv_sec < 90) {
+            usleep(100000);
+            clock_gettime(CLOCK_REALTIME, &end);
+        }
+    }
+    */
 }
 
 
