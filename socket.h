@@ -22,7 +22,7 @@ void send_FIN(char *payload, unsigned int ack, unsigned int seq = 1, unsigned ch
 void send_FIN_ACK(char *payload, unsigned int ack, unsigned int seq = 1, unsigned char ttl = 128);
 
 unsigned int wait_SYN();
-unsigned int wait_SYN_ACK(unsigned int ack = 0);
+unsigned int wait_SYN_ACK(unsigned int ack = 0, int timeout = 1);
 unsigned int wait_ACK(unsigned int ack = 0);
 unsigned int wait_data(unsigned int ack = 0);
 unsigned int wait_FIN();
