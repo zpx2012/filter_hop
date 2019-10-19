@@ -569,9 +569,9 @@ void locate_gfw(char *remote_ip)
         }
         if (type2rst) {
             type2gfw[ttl] = 1;
-            aflag = 1;
-            clock_gettime(CLOCK_REALTIME, &start);
-            break;
+            //aflag = 1;
+            //clock_gettime(CLOCK_REALTIME, &start);
+            //break;
         }
     }
 
