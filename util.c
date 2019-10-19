@@ -547,14 +547,19 @@ void locate_gfw(char *remote_ip)
     log_exp("Server packet TTL = %d", legal_ttl);
     ack++;
     send_ACK("", ack, seq);
+    usleep(100000);
+    send_ACK("", ack, seq);
+    usleep(100000);
+    send_ACK("", ack, seq);
+    usleep(100000);
 
     int aflag = 0;
     unsigned char ttl;
-    for (ttl = 0; ttl < 30; ttl++ ) {
+    for (ttl = 0; ttl < 30; ttl++) {
         type1gfw[ttl] = 0;
         type2gfw[ttl] = 0;
     }
-    for (ttl = 5; ttl <= 30; ttl++) {
+    for (ttl = 5; ttl <= 30; ttl+=2) {
         log_exp("Trying TTL %d...", ttl);
         type1rst = type2rst = succrst = 0;
         send_request(payload_sk, ack, seq, ttl);
