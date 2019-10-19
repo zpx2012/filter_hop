@@ -438,7 +438,7 @@ int main(int argc, char *argv[])
     strncpy(remote_host_name, argv[4], 63);
     strncpy(local_host_name, argv[5], 63);
 
-    //start_ttl = atoi(argv[6]);
+    start_ttl = atoi(argv[6]);
 
     /* records are saved in folder results */
     /* create the directory if not exist */
