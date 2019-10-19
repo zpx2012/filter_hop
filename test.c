@@ -505,9 +505,9 @@ int main(int argc, char *argv[])
     //get_legal_ttl(remote_ip);
     //log_exp("Server packet TTL = %d", legal_ttl);
 
-    log_exp("Running traceroute...");
-    sprintf(tmp, "%s/traceroute.txt", result_path);
-    traceroute(remote_ip, tmp);
+    //log_exp("Running traceroute...");
+    //sprintf(tmp, "%s/traceroute.txt", result_path);
+    //traceroute(remote_ip, tmp);
 
     log_exp("Locating GFW devices...");
     locate_gfw(remote_ip);
