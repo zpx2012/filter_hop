@@ -417,7 +417,7 @@ int main(int argc, char *argv[])
 {
     int opt;
 
-    if (argc != 6) {
+    if (argc < 6) {
         printf("Usage: %s <remote_ip> <remote_port> <local_port> <local_host_name> <remote_host_name>\n", argv[0]);
         exit(-1);
     }
@@ -438,7 +438,9 @@ int main(int argc, char *argv[])
     strncpy(remote_host_name, argv[4], 63);
     strncpy(local_host_name, argv[5], 63);
 
-    start_ttl = atoi(argv[6]);
+    if (argc > 6) {
+        start_ttl = atoi(argv[6]);
+    }
 
     /* records are saved in folder results */
     /* create the directory if not exist */
