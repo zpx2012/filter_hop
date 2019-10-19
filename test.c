@@ -520,7 +520,7 @@ int main(int argc, char *argv[])
         }
     }
     strftime(time_str, 20, "%Y-%m-%d %H:%M:%S", timeinfo);
-    fprintf(f_output, "%s,%d,%d", time_str, type1ttl, type2ttl);
+    fprintf(f_output, "%s,%d,%d\n", time_str, type1ttl, type2ttl);
     fclose(f_output);
 
     nfq_stop = 1;
