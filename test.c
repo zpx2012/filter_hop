@@ -68,6 +68,9 @@ char remote_host_name[64];
 char payload_sk[1000] = "GET /?keyword=ultrasurf HTTP/1.1\r\nHOST: whatever.com\r\nUser-Agent: test agent\r\n\r\n";
 
 
+int start_ttl = 5;
+
+
 static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, 
               struct nfq_data *nfa, void *data);
 
@@ -434,6 +437,8 @@ int main(int argc, char *argv[])
 
     strncpy(remote_host_name, argv[4], 63);
     strncpy(local_host_name, argv[5], 63);
+
+    //start_ttl = atoi(argv[6]);
 
     /* records are saved in folder results */
     /* create the directory if not exist */
