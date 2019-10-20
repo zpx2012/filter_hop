@@ -559,7 +559,7 @@ void locate_gfw(char *remote_ip)
         type1gfw[ttl] = 0;
         type2gfw[ttl] = 0;
     }
-    for (ttl = start_ttl; ttl <= 30; ttl++) {
+    for (ttl = start_ttl; ttl < start_ttl + 10; ttl++) {
         log_exp("Trying TTL %d...", ttl);
         type1rst = type2rst = succrst = 0;
         send_request(payload_sk, ack, seq, ttl);
@@ -568,7 +568,7 @@ void locate_gfw(char *remote_ip)
         usleep(200000);
         send_request(payload_sk, ack, seq, ttl);
         usleep(200000);
-        nfq_process(1);
+        nfq_process(2);
         if (type1rst) {
             type1gfw[ttl] = 1;
         }
